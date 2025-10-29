@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imagem em Movimento</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      overflow: hidden;
+    }
+
+    #imagem {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      left: 0;
+      top: 0;
+      transition: transform 0.05s linear;
+    }
+  </style>
+</head>
+<body>
+  <img id="imagem" src="bola.png" alt="Imagem se movendo">
+
+  <script>
+    let img = document.getElementById("imagem");
+    let x = 0;
+    let y = 0;
+    let dx = 2; // velocidade horizontal
+    let dy = 2; // velocidade vertical
+
+    function moverImagem() {
+      x += dx;
+      y += dy;
+
+      // Limites da tela
+      if (x + img.width >= window.innerWidth || x <= 0) dx *= -1;
+      if (y + img.height >= window.innerHeight || y <= 0) dy *= -1;
+
+      img.style.left = x + "px";
+      img.style.top = y + "px";
+
+      requestAnimationFrame(moverImagem);
+    }
+
+    moverImagem();
+  </script>
+</body>
+</html>
 
