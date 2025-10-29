@@ -3,70 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Três Imagens em Movimento</title>
+  <title>Motosserra com Árvores</title>
   <style>
     body {
       margin: 0;
       background-color: #111;
       overflow: hidden;
+      position: relative;
     }
 
-    img {
+    #motosserra {
       position: absolute;
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
+      cursor: pointer;
+    }
+
+    .arvore {
+      position: absolute;
+      width: 60px;
+      height: 80px;
+      opacity: 0;
+      transition: opacity 0.5s, transform 0.5s;
+      transform: scale(0.5);
+    }
+
+    .aparecer {
+      opacity: 1;
+      transform: scale(1);
     }
   </style>
 </head>
 <body>
-  <!-- As três imagens -->
-  <img id="img1" src="imagepng.png" alt="Imagem 1">
-  <img id="img2" src="vitor-roque-novo-atacante-do-palmeiras-1740764926544_v2_450x450.jpg" alt="Imagem 2">
-  <img id="img1" src="images.jpg" alt="Imagem 1">
-  
+  <!-- Imagem da motosserra -->
+  <img id="motosserra" src="png-transparent-chainsaw-stihl-lawn-mowers-husqvarna-group-chainsaw-service-technic-automotive-exterior-thumbnail.png" alt="Motosserra">
+
   <script>
-    const imagens = [
-      { el: document.getElementById("img1"), x: 50, y: 50, dx: 3, dy: 2 },
-      { el: document.getElementById("img2"), x: 300, y: 200, dx: -2, dy: 3 },
-      { el: document.getElementById("img3"), x: 600, y: 100, dx: 2, dy: -3 },
-    ];
+    const motosserra = document.getElementById("motosserra");
+
+    // posição e velocidade
+    let x = 100, y = 100;
+    let dx = 3, dy = 2;
 
     function mover() {
-      imagens.forEach((img, i) => {
-        img.x += img.dx;
-        img.y += img.dy;
+      x += dx;
+      y += dy;
 
-        // Quicar nas bordas
-        if (img.x <= 0 || img.x + img.el.width >= window.innerWidth) img.dx *= -1;
-        if (img.y <= 0 || img.y + img.el.height >= window.innerHeight) img.dy *= -1;
+      // quicar nas bordas
+      if (x <= 0 || x + motosserra.width >= window.innerWidth) dx *= -1;
+      if (y <= 0 || y + motosserra.height >= window.innerHeight) dy *= -1;
 
-        // Verificar colisão com as outras imagens
-        for (let j = i + 1; j < imagens.length; j++) {
-          const outro = imagens[j];
-          if (colidiu(img, outro)) {
-            img.dx *= -1;
-            img.dy *= -1;
-            outro.dx *= -1;
-            outro.dy *= -1;
-          }
-        }
-
-        // Atualizar posição na tela
-        img.el.style.left = img.x + "px";
-        img.el.style.top = img.y + "px";
-      });
+      motosserra.style.left = x + "px";
+      motosserra.style.top = y + "px";
 
       requestAnimationFrame(mover);
     }
 
-    function colidiu(a, b) {
-      return !(
-        a.x + a.el.width < b.x ||
-        a.x > b.x + b.el.width ||
-        a.y + a.el.height < b.y ||
-        a.y > b.y + b.el.height
-      );
-    }
+    // Cria árvores ao clicar na motosserra
+    motosserra.addEventListener("click", (e) => {
+      for (let i = 0; i < 5; i++) {
+        const arvore = document.createElement("img");
+        arvore.src = "arvore.png"; // imagem da árvore
+        arvore.classList.add("arvore");
+
+        // posição aleatória próxima à motosserra
+        arvore.style.left = (x + Math.random() * 200 - 100) + "px";
+        arvore.style.top = (y + Math.random() * 200 - 100) + "px";
+
+        document.body.appendChild(arvore);
+
+        // animação de surgimento
+        setTimeout(() => arvore.classList.add("aparecer"), 50);
+
+        // desaparece depois de 3 segundos
+        setTimeout(() => {
+          arvore.style.opacity = 0;
+          setTimeout(() => arvore.remove(), 500);
+        }, 3000);
+      }
+    });
 
     mover();
   </script>
