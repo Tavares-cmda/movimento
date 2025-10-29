@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Imagem em Movimento</title>
+  <title>Duas Imagens em Movimento</title>
   <style>
     body {
       margin: 0;
@@ -11,42 +11,73 @@
       overflow: hidden;
     }
 
-    #imagem {
+    img {
       position: absolute;
       width: 100px;
       height: 100px;
-      left: 0;
-      top: 0;
-      transition: transform 0.05s linear;
     }
   </style>
 </head>
 <body>
-  <img id="imagem" src="imagepng.png" alt="Imagem se movendo">
+  <!-- As duas imagens -->
+  <img id="img1" src="imagepng.png" alt="Imagem 1">
+  <img id="img2" src="bola2.png" alt="Imagem 2">
 
   <script>
-    let img = document.getElementById("imagem");
-    let x = 0;
-    let y = 0;
-    let dx = 2; // velocidade horizontal
-    let dy = 2; // velocidade vertical
+    const img1 = document.getElementById("img1");
+    const img2 = document.getElementById("img2");
 
-    function moverImagem() {
-      x += dx;
-      y += dy;
+    // Posições iniciais
+    let x1 = 50, y1 = 50;
+    let x2 = 400, y2 = 300;
+
+    // Velocidades (pode alterar aqui)
+    let dx1 = 3, dy1 = 2;
+    let dx2 = -2, dy2 = 3;
+
+    function mover() {
+      // Atualiza posições
+      x1 += dx1;
+      y1 += dy1;
+      x2 += dx2;
+      y2 += dy2;
 
       // Limites da tela
-      if (x + img.width >= window.innerWidth || x <= 0) dx *= -1;
-      if (y + img.height >= window.innerHeight || y <= 0) dy *= -1;
+      if (x1 <= 0 || x1 + img1.width >= window.innerWidth) dx1 *= -1;
+      if (y1 <= 0 || y1 + img1.height >= window.innerHeight) dy1 *= -1;
 
-      img.style.left = x + "px";
-      img.style.top = y + "px";
+      if (x2 <= 0 || x2 + img2.width >= window.innerWidth) dx2 *= -1;
+      if (y2 <= 0 || y2 + img2.height >= window.innerHeight) dy2 *= -1;
 
-      requestAnimationFrame(moverImagem);
+      // Detecção de colisão entre as imagens
+      if (verificarColisao()) {
+        // Inverte as direções
+        dx1 *= -1;
+        dy1 *= -1;
+        dx2 *= -1;
+        dy2 *= -1;
+      }
+
+      // Atualiza as posições na tela
+      img1.style.left = x1 + "px";
+      img1.style.top = y1 + "px";
+      img2.style.left = x2 + "px";
+      img2.style.top = y2 + "px";
+
+      requestAnimationFrame(mover);
     }
 
-    moverImagem();
+    // Função para verificar colisão
+    function verificarColisao() {
+      return !(
+        x1 + img1.width < x2 ||
+        x1 > x2 + img2.width ||
+        y1 + img1.height < y2 ||
+        y1 > y2 + img2.height
+      );
+    }
+
+    mover();
   </script>
 </body>
 </html>
-
